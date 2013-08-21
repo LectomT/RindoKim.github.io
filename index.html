@@ -33,7 +33,18 @@
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyD6g8OfeZO32K1-ZU1eVARN0ExE0jTpru0&sensor=false&language=ko"></script>
 	
 	<script type="text/javascript">
+
+		function displayLocation(position){
+			c_latitude = position.coords.latitude;
+			c_longitude = position.coords.longitude;
+		}
+
 		function initialize() {
+			if(navigator.geolocation){
+				navigator.geolocation.getCurrentPosition(displayLocation);
+			}else{
+				alert("이런, 현재 위치가 제공되지 않네요");
+			}
 	        mapOptions = {
 	          center: new google.maps.LatLng(c_latitude, c_longitude),
 	          zoom: last_zoom,
@@ -147,7 +158,7 @@
 			});
 
 			getBookshelfInRectRange();
-			getMyLocation();
+			
 		});
 
 		var bookshelflist = [];

@@ -11,5 +11,5 @@ function displayLocation(position){
 	var latitude = position.coords.latitude;
 	var longitude = position.coords.longitude;
 
-	alert("당신은 위도: "+latitude+",경도: ",+longitude+ "에 있습니다.");
+	alert("당신은 위도: "+latitude+",경도: "+longitude+ "에 있습니다.");
 }
