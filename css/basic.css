@@ -109,9 +109,11 @@ body {
     width:200px; height:24px;
     position:absolute;
     top: 15px; left:50%;
-    text-align: center;
     margin-left:-100px; 
     margin-right:0px; 
+
+    text-align: center;
+    font-weight: bolder;
     /*float:left;
     margin-left:126px;*/
     border: 0px solid #AAA;

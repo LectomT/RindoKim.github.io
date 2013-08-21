@@ -18,7 +18,8 @@
 			ne_latitude = c_latitude + offset_latitude,
 			ne_longitude = c_longitude + offset_longitude;
 		var map, mapOptions,last_zoom = 15,
-			markersArray = [];
+			markersArray = [],
+			infowindowsArray = [];
 		var bookshelvesArray = [];
 		var sort_by = "random";
 		var bookshelflist = [];
@@ -208,8 +209,10 @@
 					if (markersArray) {
 					    for (i in markersArray) {
 					      markersArray[i].setMap(null);
+					      infowindowsArray[i].setMap(null);
 					    }
 					    markersArray.length = 0;
+					    infowindowsArray.length = 0;
 					}
 		            map.setOptions(mapOptions);
 		            
@@ -239,22 +242,29 @@
 
 		                
 		                if(book_count!=0){
-			                items.push('<span class="bookshelfitem" id="' + bookshelf_id + '"><span style="font-size:14px; margin-left:0px;">' + name + '</span></span>');
+			                items.push('<span class="bookshelfitem" id="' + bookshelf_id + '"><span style="font-size:14px; margin-left:0px;">' + name +'</span>&nbsp;&nbsp;<span style="font-size:12px; color:#999;">'+book_count+ '권</span></span>');
 			                var myLatlng = new google.maps.LatLng(latitude,longitude);
 			                var marker = new google.maps.Marker({
 							    position: myLatlng,
 							    map: map,
 							    draggable:false,
-							    title: bookshelf_id.toString()
+							    title: bookshelf_id.toString(),
+							    name: name,
+							    book_count: book_count.toString()
+							});
+							var infowindow = new google.maps.InfoWindow({
+								content: "<span style='font-size:14px; font-weight:bold;'>"+marker.name+"</span><br>"+marker.book_count+"권",
+								bookshelf_id: marker.title
 							});
 
 							markersArray.push(marker);
+							infowindowsArray.push(infowindow);
 							google.maps.event.addListener(markersArray[markersArray.length-1], 'click', function(){
 								bookshelflist = [];
 								$('#book').html("");
 								bookshelflist.push(this.title);
 								var walker = this.title;
-		        				getBookInBookshelf();
+								getBookInBookshelf();
 		        				$("span.bookshelfitem").each(function(index){
 		        					if(this.id == walker){
 		        						$(this).css({ 
@@ -270,6 +280,21 @@
 					        			});
 		        					}
 		        				});
+							});
+							google.maps.event.addListener(markersArray[markersArray.length-1], 'mouseover', function(){
+								for(var i=0;i<infowindowsArray.length;i++){
+									if(this.title == infowindowsArray[i].bookshelf_id){
+										infowindowsArray[i].open(map,markersArray[i]);
+									}
+								}
+								
+							});
+							google.maps.event.addListener(markersArray[markersArray.length-1], 'mouseout', function(){
+								for(var i=0;i<infowindowsArray.length;i++){
+									if(this.title == infowindowsArray[i].bookshelf_id){
+										infowindowsArray[i].close(map,markersArray[i]);
+									}
+								}
 							});
 		            	}
 	        		}
