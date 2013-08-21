@@ -98,6 +98,13 @@ body {
     background-color:#DDD;
 }
 
+#location_refresh{
+    padding-left:7px;
+    padding-top:7.2px;
+    width:22px;
+    height:22px;
+}
+
 .logo{
     position:absolute;
     top: 15px; left:50%;
