@@ -11,9 +11,12 @@
 	<script type="text/javascript">
 		var offset_latitude = 0.005091117845203996,
 			offset_longitude = 0.00644199550153246,
-			c_latitude, c_longitude, 
-			sw_latitude, sw_longitude,
-			ne_latitude, ne_longitude;
+			c_latitude= 37.78886, 
+			c_longitude = 126.69719, 
+			sw_latitude = c_latitude - offset_latitude,
+			sw_longitude = c_longitude - offset_longitude,
+			ne_latitude = c_latitude + offset_latitude,
+			ne_longitude = c_longitude + offset_longitude;
 		var map, mapOptions,last_zoom = 15,
 			markersArray = [];
 		var bookshelvesArray = [];
@@ -31,6 +34,25 @@
 	
 	<script type="text/javascript">
 		$(document).ready(function(){
+			mapOptions = {
+	          center: new google.maps.LatLng(c_latitude, c_longitude),
+	          zoom: last_zoom,
+	          mapTypeId: google.maps.MapTypeId.ROADMAP,
+	          disableDefaultUI: true,
+	          mapTypeControl: true,
+	          mapTypeControlOptions: {
+			    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+			    position: google.maps.ControlPosition.BOTTOM_CENTER
+			  },
+	          zoomControl: true,
+	          zoomControlOptions: {
+			    style: google.maps.ZoomControlStyle.LARGE,
+			    position: google.maps.ControlPosition.RIGHT_BOTTOM
+			  }
+	        };
+	        map = new google.maps.Map(document.getElementById("map-canvas"),
+	            mapOptions);
+
 			src = document.getElementById("location_refresh").src,
                     angle = 0;
             document.getElementById("location_list").innerHTML = "";
@@ -85,8 +107,7 @@
 			    position: google.maps.ControlPosition.RIGHT_BOTTOM
 			  }
 	        };
-	        map = new google.maps.Map(document.getElementById("map-canvas"),
-	            mapOptions);
+	        map.setOptions(mapOptions);
 
 	        $("#search_form").submit(function(event){
 				event.preventDefault();
