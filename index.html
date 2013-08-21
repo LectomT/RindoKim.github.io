@@ -33,17 +33,15 @@
 	
 	<script type="text/javascript">
 
-		function displayLocation(position){
+		function setCurrentLocation(position){
 			c_latitude = position.coords.latitude;
 			c_longitude = position.coords.longitude;
+			initialize();
+
 		}
 
 		function initialize() {
-			if(navigator.geolocation){
-				navigator.geolocation.getCurrentPosition(displayLocation);
-			}else{
-				alert("이런, 현재 위치가 제공되지 않네요");
-			}
+			
 	        mapOptions = {
 	          center: new google.maps.LatLng(c_latitude, c_longitude),
 	          zoom: last_zoom,
@@ -62,12 +60,7 @@
 	        };
 	        map = new google.maps.Map(document.getElementById("map-canvas"),
 	            mapOptions);
-	    }
-
-	    $(document).ready(function(){
-			initialize();	
-
-			$("#search_form").submit(function(event){
+	        $("#search_form").submit(function(event){
 				event.preventDefault();
 
 				var $form = $(this),
@@ -157,6 +150,14 @@
 			});
 
 			getBookshelfInRectRange();
+	    }
+
+	    $(document).ready(function(){
+	    	if(navigator.geolocation){
+				navigator.geolocation.getCurrentPosition(setCurrentLocation);
+			}else{
+				alert("이런, 현재 위치가 제공되지 않네요");
+			}
 			
 		});
 
