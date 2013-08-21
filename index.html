@@ -20,6 +20,7 @@
 		var sort_by = "random";
 		var bookshelflist = [];
 		var bookshelflist_full_length = 0;
+		var src,R,img,angle;
 
 	</script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
@@ -30,6 +31,13 @@
 	
 	<script type="text/javascript">
 		$(document).ready(function(){
+			src = document.getElementById("location_refresh").src,
+                    angle = 0;
+            document.getElementById("location_list").innerHTML = "";
+            R = Raphael("location_list", 36, 36);
+            img = R.image(src, 7.2,7,22,22,"linear (default)");
+            angle += 360;
+
 	    	if(navigator.geolocation){
 				navigator.geolocation.getCurrentPosition(setCurrentLocation,noCurrentLocation);
 			}else{
@@ -38,6 +46,7 @@
 		});
 
 		function setCurrentLocation(position){
+			img.animate({transform: "r" + angle}, 1000, "<>");
 			c_latitude = position.coords.latitude;
 			c_longitude = position.coords.longitude;
 			sw_latitude = c_latitude - offset_latitude,
@@ -47,6 +56,7 @@
 			init();
 		}
 		function noCurrentLocation(error){
+			
 			c_latitude = 37.78886;
 			c_longitude = 126.69719;
 			sw_latitude = c_latitude - offset_latitude,
@@ -116,17 +126,10 @@
 				location.reload();
 			});
 
-			var src = document.getElementById("location_refresh").src,
-                    angle = 0;
-            document.getElementById("location_list").innerHTML = "";
-            var R = Raphael("location_list", 36, 36);
-            //R.circle(320, 240, 200).attr({fill: "#000", "fill-opacity": .5, "stroke-width": 5});
-            var img = R.image(src, 7.2,7,22,22,"linear (default)");
-
+			
 			$("div.locationlist").click(function(){
-				
-                angle += 360;
-                img.animate({transform: "r" + angle}, 1000, "<>");
+				angle += 360;
+				img.animate({transform: "r" + angle}, 1000, "<>");
 
 				c_latitude = map.getCenter().lat();
 				c_longitude = map.getCenter().lng();
