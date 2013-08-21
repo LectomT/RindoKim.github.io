@@ -37,6 +37,7 @@
             R = Raphael("location_list", 36, 36);
             img = R.image(src, 7.2,7,22,22,"linear (default)");
             angle += 360;
+            img.animate({transform: "r" + angle}, 1000, "<>");
 
 	    	if(navigator.geolocation){
 				navigator.geolocation.getCurrentPosition(setCurrentLocation,noCurrentLocation);
@@ -46,7 +47,7 @@
 		});
 
 		function setCurrentLocation(position){
-			img.animate({transform: "r" + angle}, 1000, "<>");
+			
 			c_latitude = position.coords.latitude;
 			c_longitude = position.coords.longitude;
 			sw_latitude = c_latitude - offset_latitude,
