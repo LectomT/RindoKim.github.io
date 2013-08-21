@@ -99,16 +99,16 @@ body {
 }
 
 .logo{
-    /*position:absolute;
-    top: 0px; left:50%;
+    position:absolute;
+    top: 15px; left:50%;
 
     margin-left:0px; 
     margin-right:0px; */
-    float:left;
-    margin-left:126px;
-    width:0px; height:48px;
+    /*float:left;
+    margin-left:126px;*/
+    width:100px; height:24px;
     border: 0px solid #AAA;
-    background-image: url('../images/ic_launcher.png'); 
+    /*background-image: url('../images/ic_launcher.png');
     background-size: 36px; 
     background-position: center;
     background-position-x: 50%;
@@ -116,7 +116,7 @@ body {
     padding:0px;
     background-repeat: no-repeat;
     background-repeat-x: no-repeat;
-    background-repeat-y: no-repeat;
+    background-repeat-y: no-repeat;*/
 }
 
 
@@ -143,11 +143,11 @@ img.bookitem_pic{ /* Picture(Cover) */
     margin-bottom:20px;
 }
 td.bookitem_td{
-    width:154px;
+    width:158px;
 }
 div.bookitem{
-    width:158px;
-    margin-bottom:19px;
+    width:162px;
+    margin-bottom:16px;
     /*padding-bottom:19px;
     /*border-radius:3px 3px 3px 3px;
     -moz-border-radius: 3px; /* Firefox */

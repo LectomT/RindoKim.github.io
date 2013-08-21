@@ -27,7 +27,9 @@
 	<script src="js/jquery.infinitescroll.min.js"></script>
 	<script src="http://masonry.desandro.com/masonry.pkgd.min.js"></script>
 	<script src="js/raphael-min.js"></script>
-	<script src="js/myLocation.js"></script>
+	<script type="text/javascript" src="js/jquery.ui.map.js"></script>
+	<script type="text/javascript" src="js/jquery.ui.map.extensions.js"></script>
+	<script src="js/geolocation.js"></script>
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyD6g8OfeZO32K1-ZU1eVARN0ExE0jTpru0&sensor=false&language=ko"></script>
 	
 	<script type="text/javascript">
@@ -127,6 +129,23 @@
 			return false;
 			});
 
+			$('#map_canvas').gmap().bind('init', function(evt, map) {
+				$('#map_canvas').gmap('getCurrentPosition', function(position, status) {
+					if ( status === 'OK' ) {
+						var clientPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+						$('#map_canvas').gmap('addMarker', {'position': clientPosition, 'bounds': true});
+						$('#map_canvas').gmap('addShape', 'Circle', { 
+							'strokeWeight': 0, 
+							'fillColor': "#008595", 
+							'fillOpacity': 0.25, 
+							'center': clientPosition, 
+							'radius': 15, 
+							'clickable': false 
+						});
+					}
+				});   
+			});
+
 			getBookshelfInRectRange();
 			getMyLocation();
 		});
@@ -195,7 +214,7 @@
 		            		if(key=='longitude'){ longitude = val; }
 		                });
 		                
-		                //if(book_count!=0){
+		                if(book_count!=0){
 			                items.push('<span class="bookshelfitem" id="' + bookshelf_id + '"><span style="font-size:14px; margin-left:0px;">' + name + '</span></span>');
 			                var myLatlng = new google.maps.LatLng(latitude,longitude);
 			                var marker = new google.maps.Marker({
@@ -228,7 +247,7 @@
 		        					}
 		        				});
 							});
-		            	//}
+		            	}
 	        		}
 
 
@@ -280,7 +299,7 @@
 					  // options
 					  columnWidth: 10,
 					  itemSelector: '.bookshelfitem',
-					  gutter : 20
+					  gutter : 15
 					});
 		        	getBookInBookshelf();
 	        	},
@@ -359,7 +378,7 @@
 					  // options
 					  columnWidth: 10,
 					  itemSelector: '.bookitem',
-					  gutter : 24
+					  gutter : 21
 					});
 
 					$('#book').append(items.join(''));
@@ -374,7 +393,7 @@
 					  // options
 					  columnWidth: 10,
 					  itemSelector: '.bookitem',
-					  gutter : 14
+					  gutter : 21
 					});
 					//eventie.bind( button, 'click', function() {
 					    // create new item elements
@@ -525,7 +544,7 @@
 				<input class="search_query" type="text" name="query" placeholder="근처의 책 검색">
 				<input type="submit" value="" class="input_search">
 			</form>
-			<div class="logo"></div>
+			<div class="logo">GREAP</div>
 
 			<div id="login_button"></div>
 		</div>
