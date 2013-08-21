@@ -11,12 +11,9 @@
 	<script type="text/javascript">
 		var offset_latitude = 0.005091117845203996,
 			offset_longitude = 0.00644199550153246,
-			c_latitude = 37.78886,
-			c_longitude = 126.69719,
-			sw_latitude = c_latitude - offset_latitude,
-			sw_longitude = c_longitude - offset_longitude,
-			ne_latitude = c_latitude + offset_latitude,
-			ne_longitude = c_longitude + offset_longitude;
+			c_latitude, c_longitude, 
+			sw_latitude, sw_longitude,
+			ne_latitude, ne_longitude;
 		var map, mapOptions,last_zoom = 15,
 			markersArray = [];
 		var bookshelvesArray = [];
@@ -29,14 +26,12 @@
 	<script src="js/jquery.infinitescroll.min.js"></script>
 	<script src="http://masonry.desandro.com/masonry.pkgd.min.js"></script>
 	<script src="js/raphael-min.js"></script>
-	<script type="text/javascript" src="js/jquery.ui.map.js"></script>
-	<script type="text/javascript" src="js/jquery.ui.map.extensions.js"></script>
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyD6g8OfeZO32K1-ZU1eVARN0ExE0jTpru0&sensor=false&language=ko"></script>
 	
 	<script type="text/javascript">
 		$(document).ready(function(){
 	    	if(navigator.geolocation){
-				navigator.geolocation.getCurrentPosition(setCurrentLocation);
+				navigator.geolocation.getCurrentPosition(setCurrentLocation,noCurrentLocation);
 			}else{
 				alert("이런, 현재 위치가 제공되지 않네요");
 			}
@@ -45,6 +40,19 @@
 		function setCurrentLocation(position){
 			c_latitude = position.coords.latitude;
 			c_longitude = position.coords.longitude;
+			sw_latitude = c_latitude - offset_latitude,
+			sw_longitude = c_longitude - offset_longitude,
+			ne_latitude = c_latitude + offset_latitude,
+			ne_longitude = c_longitude + offset_longitude;
+			init();
+		}
+		function noCurrentLocation(error){
+			c_latitude = 37.78886;
+			c_longitude = 126.69719;
+			sw_latitude = c_latitude - offset_latitude,
+			sw_longitude = c_longitude - offset_longitude,
+			ne_latitude = c_latitude + offset_latitude,
+			ne_longitude = c_longitude + offset_longitude;			
 			init();
 		}
 
@@ -68,6 +76,7 @@
 	        };
 	        map = new google.maps.Map(document.getElementById("map-canvas"),
 	            mapOptions);
+
 	        $("#search_form").submit(function(event){
 				event.preventDefault();
 
@@ -138,30 +147,12 @@
 			return false;
 			});
 
-			$('#map_canvas').gmap().bind('init', function(evt, map) {
-				$('#map_canvas').gmap('getCurrentPosition', function(position, status) {
-					if ( status === 'OK' ) {
-						var clientPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-						$('#map_canvas').gmap('addMarker', {'position': clientPosition, 'bounds': true});
-						$('#map_canvas').gmap('addShape', 'Circle', { 
-							'strokeWeight': 0, 
-							'fillColor': "#008595", 
-							'fillOpacity': 0.25, 
-							'center': clientPosition, 
-							'radius': 15, 
-							'clickable': false 
-						});
-					}
-				});   
-			});
-
 			getBookshelfInRectRange();
 	    }
 
 	    
 
 		function getBookshelfInRectRange(){
-			
 			var	bookshelf_id, name, pic_url, description, book_count,
 				latitude,longitude,distance;
 
@@ -188,7 +179,7 @@
 					    position: google.maps.ControlPosition.RIGHT_BOTTOM
 					  }
 			        };
-					
+
 					if (markersArray) {
 					    for (i in markersArray) {
 					      markersArray[i].setMap(null);
@@ -220,6 +211,7 @@
 		            		if(key=='latitude'){ latitude = val; }
 		            		if(key=='longitude'){ longitude = val; }
 		                });
+
 		                
 		                if(book_count!=0){
 			                items.push('<span class="bookshelfitem" id="' + bookshelf_id + '"><span style="font-size:14px; margin-left:0px;">' + name + '</span></span>');
@@ -230,7 +222,7 @@
 							    draggable:false,
 							    title: bookshelf_id.toString()
 							});
-							
+
 							markersArray.push(marker);
 							google.maps.event.addListener(markersArray[markersArray.length-1], 'click', function(){
 								bookshelflist = [];
