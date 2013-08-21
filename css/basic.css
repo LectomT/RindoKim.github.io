@@ -96,6 +96,7 @@ body {
 }
 #login_button:hover{
     background-color:#DDD;
+    cursor: pointer;
 }
 
 #location_refresh{
@@ -126,6 +127,9 @@ body {
     background-repeat: no-repeat;
     background-repeat-x: no-repeat;
     background-repeat-y: no-repeat;*/
+}
+.logo:hover{
+    cursor: pointer;
 }
 
 
@@ -225,7 +229,7 @@ img.book_detail_pic{ /* Picture(Cover) */
 
 .nav_ul_li_a{
     background-color:#fff;
-    border: 1px solid #BBB;
+    border: 1px solid #BEBEBE;
     color:#222;
     display:block;
     font-weight:normal;
@@ -408,6 +412,7 @@ div.locationlist{
     background-repeat-y: no-repeat;*/
 }
 div.locationlist:hover{
+    cursor: pointer;
     /*background-image: url(../images/icon_refresh.png);
     background-size: 22px;
     background-position: center;
