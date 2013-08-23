@@ -71,6 +71,7 @@
 		});
 
 		function rotateRefreshImage(){
+
 			angle += 360;
             img.animate({transform: "r" + angle}, 1000, "<>");
 		}
@@ -103,6 +104,7 @@
 				}
 			}
 			$('#book').html("");
+			$('#book').css("height","0px");
 			getBookInBookshelf();
 		}
 
@@ -136,18 +138,21 @@
 			$("#sort_by_pub_date_desc").click(function() {
 				sort_by = "pub_date_desc";
 				$('#book').html("");
+				$('#book').css("height","0px");
 				getBookInBookshelf();
 			});
 
 			$("#sort_by_reg_date_desc").click(function() {
 				sort_by = "reg_date_desc";
 				$('#book').html("");
+				$('#book').css("height","0px");
 				getBookInBookshelf();
 			});
 
 			$("#sort_by_random").click(function() {
 				sort_by = "random";
 				$('#book').html("");
+				$('#book').css("height","0px");
 				getBookInBookshelf();
 			});
 			$(".logo").click(function(){
@@ -167,7 +172,9 @@
 
     			//alert("c_lat: "+c_latitude+"\n"+"c_lng: "+c_longitude+"\n"+"sw_lat: "+sw_latitude+"\n"+"sw_lng: "+sw_longitude+"\n"+"ne_lat: "+ne_latitude+"\n"+"ne_lng: "+ne_longitude);
     			$('#bookshelf').html("");
+    			$('#bookshelf').css("height","0px");
     			$('#book').html("");
+    			$('#book').css("height","0px");
     			getBookshelfInRectRange();	
 			});
 
@@ -348,6 +355,11 @@
 		}
 
 		function getBookInBookshelf() {
+			$("#loading_book_img").css({
+				'visibility': 'visible',
+				'display': 'block'
+			});
+
 			var query = document.forms["search_form"]["query"].value;
 			var f_offset = 0, l_offset = 99, in_bookshelf = "";
 			
@@ -444,6 +456,10 @@
 					    msnry.appended( elems );*/
   					//});
 					//$('#book').append(items.join(''));
+					$("#loading_book_img").css({
+        				'visibility': 'hidden',
+        				'display': 'none'
+        			});
 	        	},
 	            error : function(e){
 	                alert("error");
@@ -553,7 +569,7 @@
 		<div id="book" class="center">
 		</div>
 		<nav id="page_nav">
-			<img style="width:60px; height:60px; position:absolute; left:50%; margin-left:-30px;" src="images/loading.gif">
+			<img id="loading_book_img" style="width:60px; height:60px; position:absolute; left:50%; margin-left:-30px; visibility:hidden;" src="images/loading.gif">
 			<a href="http://dafer-dev.herokuapp.com/book/in_bookshelf/2" id="next"></a>
 		</nav>
 	</div>
