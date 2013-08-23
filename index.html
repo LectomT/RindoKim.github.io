@@ -256,8 +256,11 @@
 							});
 							var infowindow = new google.maps.InfoWindow({
 								content: "<span style='font-size:14px; font-weight:bold;'>"+marker.name+"</span><br>"+marker.book_count+"권",
-								bookshelf_id: marker.bookshelf_id
+								bookshelf_id: marker.bookshelf_id,
+								//position: new google.maps.LatLng(35.333,125.3434)
 							});
+
+							//alert(infowindow.position);
 
 							markersArray.push(marker);
 							infowindowsArray.push(infowindow);
@@ -287,6 +290,7 @@
 								for(var i=0;i<infowindowsArray.length;i++){
 									if(this.bookshelf_id == infowindowsArray[i].bookshelf_id){
 										infowindowsArray[i].open(map,markersArray[i]);
+										//alert(infowindowsArray[i].position);
 									}
 								}
 								
