@@ -25,6 +25,7 @@
 		var bookshelflist = [];
 		var bookshelflist_full_length = 0;
 		var src,R,img,angle;
+		var marker_img = 'images/marker_purple.png'
 
 	</script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
@@ -285,6 +286,15 @@
 					        			});
 		        					}
 		        				});
+		        				for(var i=0;i<markersArray.length;i++){
+									if(this.bookshelf_id == markersArray[i].bookshelf_id){
+										var icon = { url:marker_img, 
+											scaledSize: new google.maps.Size(23,41) };
+										markersArray[i].setIcon(icon);
+									}else{
+										markersArray[i].setIcon(null);
+									}
+								}
 							});
 							google.maps.event.addListener(markersArray[markersArray.length-1], 'mouseover', function(){
 								for(var i=0;i<infowindowsArray.length;i++){
@@ -330,6 +340,16 @@
 								'background': '#fFfffF'
 							});
 							bookshelflist.push(this.id);
+
+							for(var i=0;i<markersArray.length;i++){
+								if(this.id == markersArray[i].bookshelf_id){
+									var icon = { url:marker_img,
+										scaledSize: new google.maps.Size(23,41) };
+									markersArray[i].setIcon(icon);
+								}else{
+									markersArray[i].setIcon(null);
+								}
+							}
 							
 		        			$('#book').html("");
 		        			getBookInBookshelf();
