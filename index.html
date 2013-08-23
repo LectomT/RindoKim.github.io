@@ -248,13 +248,14 @@
 							    position: myLatlng,
 							    map: map,
 							    draggable:false,
-							    title: bookshelf_id.toString(),
+							    title: name,
+							    bookshelf_id: bookshelf_id.toString(),
 							    name: name,
 							    book_count: book_count.toString()
 							});
 							var infowindow = new google.maps.InfoWindow({
 								content: "<span style='font-size:14px; font-weight:bold;'>"+marker.name+"</span><br>"+marker.book_count+"권",
-								bookshelf_id: marker.title
+								bookshelf_id: marker.bookshelf_id
 							});
 
 							markersArray.push(marker);
@@ -262,8 +263,8 @@
 							google.maps.event.addListener(markersArray[markersArray.length-1], 'click', function(){
 								bookshelflist = [];
 								$('#book').html("");
-								bookshelflist.push(this.title);
-								var walker = this.title;
+								bookshelflist.push(this.bookshelf_id);
+								var walker = this.bookshelf_id;
 								getBookInBookshelf();
 		        				$("span.bookshelfitem").each(function(index){
 		        					if(this.id == walker){
@@ -360,7 +361,7 @@
 
 		function getBookInBookshelf() {
 			var query = document.forms["search_form"]["query"].value;
-			var f_offset = 0, l_offset = 9, in_bookshelf = "";
+			var f_offset = 0, l_offset = 99, in_bookshelf = "";
 			
 			for(var i=0;i<bookshelflist.length;i++){
 				in_bookshelf += bookshelflist[i];
@@ -430,7 +431,7 @@
 					  gutter : 21
 					});
 
-					$('#book').append(items.join(''));
+					/*$('#book').append(items.join(''));
 					$("div.bookitem").addClass("arrow_no nav_ul_li_a");		        
 					$('#book').append(items.join(''));
 					$("div.bookitem").addClass("arrow_no nav_ul_li_a");		        
@@ -443,7 +444,7 @@
 					  columnWidth: 10,
 					  itemSelector: '.bookitem',
 					  gutter : 21
-					});
+					});*/
 					//eventie.bind( button, 'click', function() {
 					    // create new item elements
 					    /*var elems = [];
