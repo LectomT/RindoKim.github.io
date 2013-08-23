@@ -162,7 +162,7 @@
     			ne_latitude = map.getBounds().getNorthEast().lat();
     			ne_longitude = map.getBounds().getNorthEast().lng();
 
-    			alert("c_lat: "+c_latitude+"\n"+"c_lng: "+c_longitude+"\n"+"sw_lat: "+sw_latitude+"\n"+"sw_lng: "+sw_longitude+"\n"+"ne_lat: "+ne_latitude+"\n"+"ne_lng: "+ne_longitude);
+    			//alert("c_lat: "+c_latitude+"\n"+"c_lng: "+c_longitude+"\n"+"sw_lat: "+sw_latitude+"\n"+"sw_lng: "+sw_longitude+"\n"+"ne_lat: "+ne_latitude+"\n"+"ne_lng: "+ne_longitude);
     			$('#bookshelf').html("");
     			$('#book').html("");
     			getBookshelfInRectRange();	
@@ -285,7 +285,7 @@
 							});
 							google.maps.event.addListener(markersArray[markersArray.length-1], 'mouseover', function(){
 								for(var i=0;i<infowindowsArray.length;i++){
-									if(this.title == infowindowsArray[i].bookshelf_id){
+									if(this.bookshelf_id == infowindowsArray[i].bookshelf_id){
 										infowindowsArray[i].open(map,markersArray[i]);
 									}
 								}
@@ -293,7 +293,7 @@
 							});
 							google.maps.event.addListener(markersArray[markersArray.length-1], 'mouseout', function(){
 								for(var i=0;i<infowindowsArray.length;i++){
-									if(this.title == infowindowsArray[i].bookshelf_id){
+									if(this.bookshelf_id == infowindowsArray[i].bookshelf_id){
 										infowindowsArray[i].close(map,markersArray[i]);
 									}
 								}
