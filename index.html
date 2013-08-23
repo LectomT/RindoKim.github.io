@@ -9,10 +9,10 @@
 	<link rel="stylesheet" href="css/signin.css" type="text/css"/>
 	
 	<script type="text/javascript">
-		var offset_latitude = 0.005091117845203996,
-			offset_longitude = 0.00644199550153246,
-			c_latitude= 37.78886, 
-			c_longitude = 126.69719, 
+		var offset_latitude = 0.00442328470471,
+			offset_longitude = 0.01823902130126,
+			c_latitude= 37.550667, 
+			c_longitude = 126.91737, 
 			sw_latitude = c_latitude - offset_latitude,
 			sw_longitude = c_longitude - offset_longitude,
 			ne_latitude = c_latitude + offset_latitude,
@@ -54,8 +54,9 @@
 	        map = new google.maps.Map(document.getElementById("map-canvas"),
 	            mapOptions);
 
-			src = document.getElementById("location_refresh").src,
-                    angle = 0;
+	        src = document.getElementById("location_refresh").src, 
+	        angle = 0;
+
             document.getElementById("location_list").innerHTML = "";
             R = Raphael("location_list", 36, 36);
             img = R.image(src, 7.2,7,22,22,"linear (default)");
@@ -73,25 +74,25 @@
 			
 			c_latitude = position.coords.latitude;
 			c_longitude = position.coords.longitude;
-			sw_latitude = c_latitude - offset_latitude,
-			sw_longitude = c_longitude - offset_longitude,
-			ne_latitude = c_latitude + offset_latitude,
+			sw_latitude = c_latitude - offset_latitude;
+			sw_longitude = c_longitude - offset_longitude;
+			ne_latitude = c_latitude + offset_latitude;
 			ne_longitude = c_longitude + offset_longitude;
 			init();
 		}
 		function noCurrentLocation(error){
 			
-			c_latitude = 37.78886;
-			c_longitude = 126.69719;
-			sw_latitude = c_latitude - offset_latitude,
-			sw_longitude = c_longitude - offset_longitude,
-			ne_latitude = c_latitude + offset_latitude,
-			ne_longitude = c_longitude + offset_longitude;			
+			c_latitude = 37.550667;
+			c_longitude = 126.91737;
+			sw_latitude = c_latitude - offset_latitude;
+			sw_longitude = c_longitude - offset_longitude;
+			ne_latitude = c_latitude + offset_latitude;
+			ne_longitude = c_longitude + offset_longitude;
 			init();
 		}
 
 		function init() {
-			
+
 	        mapOptions = {
 	          center: new google.maps.LatLng(c_latitude, c_longitude),
 	          zoom: last_zoom,
@@ -160,6 +161,8 @@
     			sw_longitude = map.getBounds().getSouthWest().lng();
     			ne_latitude = map.getBounds().getNorthEast().lat();
     			ne_longitude = map.getBounds().getNorthEast().lng();
+
+    			//alert("c_lat: "+c_latitude+"\n"+"c_lng: "+c_longitude+"\n"+"sw_lat: "+sw_latitude+"\n"+"sw_lng: "+sw_longitude+"\n"+"ne_lat: "+ne_latitude+"\n"+"ne_lng: "+ne_longitude);
     			$('#bookshelf').html("");
     			$('#book').html("");
     			getBookshelfInRectRange();	
@@ -175,8 +178,6 @@
 
 			getBookshelfInRectRange();
 	    }
-
-	    
 
 		function getBookshelfInRectRange(){
 			var	bookshelf_id, name, pic_url, description, book_count,
