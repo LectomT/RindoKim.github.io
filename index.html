@@ -17,7 +17,7 @@
 			sw_longitude = c_longitude - offset_longitude,
 			ne_latitude = c_latitude + offset_latitude,
 			ne_longitude = c_longitude + offset_longitude;
-		var map, mapOptions,last_zoom = 16,
+		var map, mapOptions,last_zoom,
 			markersArray = [],
 			infowindowsArray = [];
 		var bookshelvesArray = [];
@@ -38,7 +38,7 @@
 		$(document).ready(function(){
 			mapOptions = {
 	          center: new google.maps.LatLng(c_latitude, c_longitude),
-	          zoom: last_zoom,
+	          //zoom: last_zoom,
 	          mapTypeId: google.maps.MapTypeId.ROADMAP,
 	          disableDefaultUI: true,
 	          mapTypeControl: true,
@@ -61,8 +61,7 @@
             document.getElementById("location_list").innerHTML = "";
             R = Raphael("location_list", 36, 36);
             img = R.image(src, 7.2,7,22,22,"linear (default)");
-            angle += 360;
-            img.animate({transform: "r" + angle}, 1000, "<>");
+            rotateRefreshImage();
 
 	    	if(navigator.geolocation){
 				navigator.geolocation.getCurrentPosition(setCurrentLocation,noCurrentLocation);
@@ -71,46 +70,50 @@
 			}
 		});
 
+		function rotateRefreshImage(){
+			angle += 360;
+            img.animate({transform: "r" + angle}, 1000, "<>");
+		}
+
 		function setCurrentLocation(position){
-			
 			c_latitude = position.coords.latitude;
 			c_longitude = position.coords.longitude;
-			sw_latitude = c_latitude - offset_latitude;
-			sw_longitude = c_longitude - offset_longitude;
-			ne_latitude = c_latitude + offset_latitude;
-			ne_longitude = c_longitude + offset_longitude;
+			last_zoom = 16;
 			init();
 		}
 		function noCurrentLocation(error){
-			
 			c_latitude = 37.550667;
 			c_longitude = 126.91737;
+			last_zoom = 16;
+			init();
+		}
+
+		function selectBookshelf(id){
+			for(var i=0;i<markersArray.length;i++){
+				if(id == markersArray[i].bookshelf_id){
+					var icon = { url:marker_img, 
+						scaledSize: new google.maps.Size(23,41) };
+					markersArray[i].setIcon(icon);
+
+					if(last_zoom<16){ last_zoom = 16; }
+					map.setZoom(last_zoom);
+			        map.panTo(markersArray[i].position);
+				}else{
+					markersArray[i].setIcon(null);
+				}
+			}
+			$('#book').html("");
+			getBookInBookshelf();
+		}
+
+		function init() {
 			sw_latitude = c_latitude - offset_latitude;
 			sw_longitude = c_longitude - offset_longitude;
 			ne_latitude = c_latitude + offset_latitude;
 			ne_longitude = c_longitude + offset_longitude;
-			init();
-		}
 
-		function init() {
-
-	        mapOptions = {
-	          center: new google.maps.LatLng(c_latitude, c_longitude),
-	          zoom: last_zoom,
-	          mapTypeId: google.maps.MapTypeId.ROADMAP,
-	          disableDefaultUI: true,
-	          mapTypeControl: true,
-	          mapTypeControlOptions: {
-			    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-			    position: google.maps.ControlPosition.BOTTOM_CENTER
-			  },
-	          zoomControl: true,
-	          zoomControlOptions: {
-			    style: google.maps.ZoomControlStyle.LARGE,
-			    position: google.maps.ControlPosition.RIGHT_BOTTOM
-			  }
-	        };
-	        map.setOptions(mapOptions);
+			map.setZoom(last_zoom);
+	        map.panTo(new google.maps.LatLng(c_latitude, c_longitude));
 
 	        $("#search_form").submit(function(event){
 				event.preventDefault();
@@ -153,8 +156,7 @@
 
 			
 			$("div.locationlist").click(function(){
-				angle += 360;
-				img.animate({transform: "r" + angle}, 1000, "<>");
+				rotateRefreshImage();
 
 				c_latitude = map.getCenter().lat();
 				c_longitude = map.getCenter().lng();
@@ -190,23 +192,8 @@
 	            data : "sw_latitude="+sw_latitude+"&sw_longitude="+sw_longitude+"&ne_latitude="+ne_latitude+"&ne_longitude="+ne_longitude,
 	            dataType : "jsonp",
 	            success : function(json) {
-	            	//$('#map-canvas').html("");
-	            	mapOptions = {
-			          center: new google.maps.LatLng(c_latitude, c_longitude),
-			          zoom: last_zoom,
-			          mapTypeId: google.maps.MapTypeId.ROADMAP,
-			          disableDefaultUI: true,
-			          mapTypeControl: true,
-			          mapTypeControlOptions: {
-					    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-					    position: google.maps.ControlPosition.BOTTOM_CENTER
-					  },
-			          zoomControl: true,
-			          zoomControlOptions: {
-					    style: google.maps.ZoomControlStyle.LARGE,
-					    position: google.maps.ControlPosition.RIGHT_BOTTOM
-					  }
-			        };
+	            	map.setZoom(last_zoom);
+	        		map.panTo(new google.maps.LatLng(c_latitude, c_longitude));
 
 					if (markersArray) {
 					    for (i in markersArray) {
@@ -216,7 +203,6 @@
 					    markersArray.length = 0;
 					    infowindowsArray.length = 0;
 					}
-		            map.setOptions(mapOptions);
 		            
 		            google.maps.event.addListener(map, 'bounds_changed', function() {
 		            		last_zoom = map.getZoom();
@@ -241,7 +227,6 @@
 		            		if(key=='latitude'){ latitude = val; }
 		            		if(key=='longitude'){ longitude = val; }
 		                });
-
 		                
 		                if(book_count!=0){
 			                items.push('<span class="bookshelfitem" id="' + bookshelf_id + '"><span style="font-size:14px; margin-left:0px;">' + name +'</span>&nbsp;&nbsp;<span style="font-size:12px; color:#999;">'+book_count+ '권</span></span>');
@@ -266,12 +251,14 @@
 							markersArray.push(marker);
 							infowindowsArray.push(infowindow);
 							google.maps.event.addListener(markersArray[markersArray.length-1], 'click', function(){
+								
 								bookshelflist = [];
-								$('#book').html("");
 								bookshelflist.push(this.bookshelf_id);
 								var walker = this.bookshelf_id;
-								getBookInBookshelf();
-		        				$("span.bookshelfitem").each(function(index){
+
+								selectBookshelf(this.bookshelf_id);
+
+								$("span.bookshelfitem").each(function(index){
 		        					if(this.id == walker){
 		        						$(this).css({ 
 											'color': '#6A5ACD',
@@ -286,15 +273,7 @@
 					        			});
 		        					}
 		        				});
-		        				for(var i=0;i<markersArray.length;i++){
-									if(this.bookshelf_id == markersArray[i].bookshelf_id){
-										var icon = { url:marker_img, 
-											scaledSize: new google.maps.Size(23,41) };
-										markersArray[i].setIcon(icon);
-									}else{
-										markersArray[i].setIcon(null);
-									}
-								}
+		        				
 							});
 							google.maps.event.addListener(markersArray[markersArray.length-1], 'mouseover', function(){
 								for(var i=0;i<infowindowsArray.length;i++){
@@ -314,14 +293,10 @@
 							});
 		            	}
 	        		}
-
-
-
 	                $('<div/>', {
 		        		'class': 'bookshelflist',
 		        		html: items.join('')
 		        	}).appendTo('#bookshelf');
-
 
 		        	//$("div.bookshelflist").addClass("nav_ul");
 		        	//$("li.bookshelfitem").addClass("arrow_no nav_ul_li_a");
@@ -333,29 +308,17 @@
 		        				'font-weight' : 'normal',
 		        				'background' : '#f8f8f8'
 		        			});
-		        			
 	        				$(this).css({ 
 								'color': '#6A5ACD',
 								'font-weight' : 'bold',
-								'background': '#fFfffF'
+								'background': '#FFF'
 							});
 							bookshelflist.push(this.id);
-
-							for(var i=0;i<markersArray.length;i++){
-								if(this.id == markersArray[i].bookshelf_id){
-									var icon = { url:marker_img,
-										scaledSize: new google.maps.Size(23,41) };
-									markersArray[i].setIcon(icon);
-								}else{
-									markersArray[i].setIcon(null);
-								}
-							}
-							
-		        			$('#book').html("");
-		        			getBookInBookshelf();
+							selectBookshelf(this.id);
 		        			return false;
 	        			});
 		        	});
+
 		        	$("div.locationlist").css({
 						'background-color': '#fff'
 					});
@@ -457,10 +420,6 @@
 					});
 
 					/*$('#book').append(items.join(''));
-					$("div.bookitem").addClass("arrow_no nav_ul_li_a");		        
-					$('#book').append(items.join(''));
-					$("div.bookitem").addClass("arrow_no nav_ul_li_a");		        
-					$('#book').append(items.join(''));
 					$("div.bookitem").addClass("arrow_no nav_ul_li_a");		        
 					$('#book').append(items.join(''));
 					$("div.bookitem").addClass("arrow_no nav_ul_li_a");		        
@@ -570,9 +529,7 @@
 </head>
 
 <body>
-	
 	<div class="center">
-	
 	<div class="center" style="clear:both;">
 		<div id="map-canvas"></div>
 		<table style="margin-top:10px">
@@ -619,7 +576,7 @@
 				<input class="search_query" type="text" name="query" placeholder="근처의 책 검색">
 				<input type="submit" value="" class="input_search">
 			</form>
-			<div class="logo">다빈치의 책장</div>
+			<div class="logo">bolocat</div>
 
 			<div id="login_button"></div>
 		</div>
@@ -628,6 +585,5 @@
 	<footer>
 	</footer>
 	</div>
-
 </body>
 </html>

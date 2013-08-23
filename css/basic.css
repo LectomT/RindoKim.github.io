@@ -109,10 +109,11 @@ body {
 .logo{
     width:200px; height:24px;
     position:absolute;
-    top: 15px; left:50%;
+    top: 13px; left:50%;
     margin-left:-100px; 
     margin-right:0px; 
 
+    font-size:20px; 
     text-align: center;
     font-weight: bolder;
     /*float:left;
