@@ -35,6 +35,7 @@ body {
     -webkit-border-radius: 3px 0px 0px 3px; /* Safari, Chrome */   
 }
 #content{
+    clear:both;
     width:850px;
     margin-top:11px;
 }
