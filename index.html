@@ -71,6 +71,21 @@
 			}else{
 				alert("이런, 현재 위치가 제공되지 않네요");
 			}
+
+			$.ajax({
+	            type : "GET",
+	            url : "http://dafer-dev.herokuapp.com/user/session_info/",
+	            data : "",
+	            dataType : "jsonp",
+	            success : function(json) {
+	            	$("#user_info").html(json.user_info.user_name);
+	            	$("#login_button").css("width","0px");
+	            	
+	        	},
+	            error : function(e){
+	                alert("error");
+	            }
+	        });
 		});
 
 		function rotateRefreshImage(){
@@ -634,8 +649,9 @@
 				<input type="submit" value="" class="input_search">
 			</form>
 			<div class="logo"><img src="images/logo_web.png" width="53" height="22"></div>
-
+			
 			<div id="login_button"></div>
+			<div id="user_info"></div>
 		</div>
 	</nav>	
 

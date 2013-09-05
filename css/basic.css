@@ -71,6 +71,19 @@ body {
     top: 10%; left: 80%;*/
 }
 
+#user_info{
+    position:relative;
+    float:right;
+    font-size:16px;
+    font-weight:bold;
+    color:#333;
+    
+    height:40px; 
+    margin-top:16px;
+    margin-right:0px; 
+    padding:0px;
+}
+
 #login_button{
     position:relative;
     float:right;
@@ -95,6 +108,7 @@ body {
     background-repeat-x: no-repeat;
     background-repeat-y: no-repeat;
 }
+
 #login_button:hover{
     background-color:#DDD;
     cursor: pointer;
