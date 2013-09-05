@@ -532,6 +532,7 @@ li.arrow a {
     #map-canvas{ width:360px; height:240px; margin-top:7px; }
     #bookshelves{ padding-left:0px;}
     #bookshelf{ width:260px; }
+    #book{margin-left:10px;}
     .search_query{ width:80px; }
     #login_button{ background-size:5px; width:40px; margin-left:0px; margin-right:0px; }
     .logo{ background-size:5px; width:10px; margin-left:0px; margin-right:0px; }
