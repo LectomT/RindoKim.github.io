@@ -163,24 +163,7 @@
 			});
 
 			
-			$("div.locationlist").click(function(){
-				book_list = [];
-				rotateRefreshImage();
-
-				c_latitude = map.getCenter().lat();
-				c_longitude = map.getCenter().lng();
-    			sw_latitude = map.getBounds().getSouthWest().lat();
-    			sw_longitude = map.getBounds().getSouthWest().lng();
-    			ne_latitude = map.getBounds().getNorthEast().lat();
-    			ne_longitude = map.getBounds().getNorthEast().lng();
-
-    			//alert("c_lat: "+c_latitude+"\n"+"c_lng: "+c_longitude+"\n"+"sw_lat: "+sw_latitude+"\n"+"sw_lng: "+sw_longitude+"\n"+"ne_lat: "+ne_latitude+"\n"+"ne_lng: "+ne_longitude);
-    			$('#bookshelf').html("");
-    			//$('#bookshelf').css("height","0px");
-    			$('#book').html("");
-    			$('#book').css("height","0px");
-    			getBookshelfInRectRange();	
-			});
+			$("div.locationlist").click(refreshLocation);
 
 			// When clicking on the button close or the mask layer the popup closed
 			$('a.close, #mask').click(function() { 
@@ -191,6 +174,25 @@
 			});
 
 			getBookshelfInRectRange();
+	    }
+
+	    function refreshLocation(){
+	    	book_list = [];
+			rotateRefreshImage();
+
+			c_latitude = map.getCenter().lat();
+			c_longitude = map.getCenter().lng();
+			sw_latitude = map.getBounds().getSouthWest().lat();
+			sw_longitude = map.getBounds().getSouthWest().lng();
+			ne_latitude = map.getBounds().getNorthEast().lat();
+			ne_longitude = map.getBounds().getNorthEast().lng();
+
+			//alert("c_lat: "+c_latitude+"\n"+"c_lng: "+c_longitude+"\n"+"sw_lat: "+sw_latitude+"\n"+"sw_lng: "+sw_longitude+"\n"+"ne_lat: "+ne_latitude+"\n"+"ne_lng: "+ne_longitude);
+			$('#bookshelf').html("");
+			//$('#bookshelf').css("height","0px");
+			$('#book').html("");
+			$('#book').css("height","0px");
+			getBookshelfInRectRange();	
 	    }
 
 		function getBookshelfInRectRange(){
@@ -224,134 +226,141 @@
 	  				
 	            	bookshelflist = [];
 	            	var items = [];
-	            	for(var i=0;i<json.items.length;i++){
-	            		bookshelflist_full_length = json.items.length;
-		        		$.each(json.items[i], function(key, val) {
-		        			if(key=='book_count'){ book_count = val; }
-		        			if(key=='name'){ name = val; }
-		        			if(key=='description'){ description = val; }
-		        			if(key=='pic_url'){ pic_url = val; }
-		            		if(key=='bookshelf_id'){
-		            			bookshelflist[bookshelflist.length] = val;
-		            			bookshelf_id = val;
-		            		}
-		            		if(key=='latitude'){ latitude = val; }
-		            		if(key=='longitude'){ longitude = val; }
-		                });
-		                
-		                if(book_count!=0){
-			                items.push('<span class="bookshelfitem" id="' + bookshelf_id + '"><span style="font-size:14px; margin-left:0px;">' + name +'</span>&nbsp;&nbsp;<span style="font-size:12px; color:#999;">'+book_count+ '권</span></span>');
-			                var myLatlng = new google.maps.LatLng(latitude,longitude);
-			                var marker = new google.maps.Marker({
-							    position: myLatlng,
-							    map: map,
-							    draggable:false,
-							    title: name,
-							    bookshelf_id: bookshelf_id,//bookshelf_id.toString(),
-							    name: name,
-							    book_count: book_count.toString()
-							});
-							var infowindow = new google.maps.InfoWindow({
-								content: "<span style='font-size:14px; font-weight:bold;'>"+marker.name+"</span><br>"+marker.book_count+"권",
-								bookshelf_id: marker.bookshelf_id,
-								//position: new google.maps.LatLng(35.333,125.3434)
-							});
+	            	if(json.items.length==0){
+	            		last_zoom--;
+	            		map.setZoom(last_zoom);
+	            		refreshLocation();
+	            	}else{
+		            	for(var i=0;i<json.items.length;i++){
+		            		bookshelflist_full_length = json.items.length;
+			        		$.each(json.items[i], function(key, val) {
+			        			if(key=='book_count'){ book_count = val; }
+			        			if(key=='name'){ name = val; }
+			        			if(key=='description'){ description = val; }
+			        			if(key=='pic_url'){ pic_url = val; }
+			            		if(key=='bookshelf_id'){
+			            			bookshelflist[bookshelflist.length] = val;
+			            			bookshelf_id = val;
+			            		}
+			            		if(key=='latitude'){ latitude = val; }
+			            		if(key=='longitude'){ longitude = val; }
+			                });
+			                
+			                if(book_count==0){
+			                }else{
+				                items.push('<span class="bookshelfitem" id="' + bookshelf_id + '"><span style="font-size:14px; margin-left:0px;">' + name +'</span>&nbsp;&nbsp;<span style="font-size:12px; color:#999;">'+book_count+ '권</span></span>');
+				                var myLatlng = new google.maps.LatLng(latitude,longitude);
+				                var marker = new google.maps.Marker({
+								    position: myLatlng,
+								    map: map,
+								    draggable:false,
+								    title: name,
+								    bookshelf_id: bookshelf_id,//bookshelf_id.toString(),
+								    name: name,
+								    book_count: book_count.toString()
+								});
+								var infowindow = new google.maps.InfoWindow({
+									content: "<span style='font-size:14px; font-weight:bold;'>"+marker.name+"</span><br>"+marker.book_count+"권",
+									bookshelf_id: marker.bookshelf_id,
+									//position: new google.maps.LatLng(35.333,125.3434)
+								});
 
-							//alert(infowindow.position);
+								//alert(infowindow.position);
 
-							markersArray.push(marker);
-							infowindowsArray.push(infowindow);
-							google.maps.event.addListener(markersArray[markersArray.length-1], 'click', function(){
-								
-								bookshelflist = [];
-								bookshelflist.push(this.bookshelf_id);
-								var walker = this.bookshelf_id;
+								markersArray.push(marker);
+								infowindowsArray.push(infowindow);
+								google.maps.event.addListener(markersArray[markersArray.length-1], 'click', function(){
+									
+									bookshelflist = [];
+									bookshelflist.push(this.bookshelf_id);
+									var walker = this.bookshelf_id;
 
-								selectBookshelf(this.bookshelf_id);
+									selectBookshelf(this.bookshelf_id);
 
-								$("span.bookshelfitem").each(function(index){
-		        					if(this.id == walker){
-		        						$(this).css({ 
-											'color': '#6A5ACD',
-											'font-weight' : 'bold',
-											'background': '#fFfffF'
-										});
-		        					}else{
-		        						$(this).css({
-					        				'color': '#222',
-					        				'font-weight' : 'normal',
-					        				'background' : '#f8f8f8'
-					        			});
-		        					}
-		        				});
-		        				
-							});
-							google.maps.event.addListener(markersArray[markersArray.length-1], 'mouseover', function(){
-								for(var i=0;i<infowindowsArray.length;i++){
-									if(this.bookshelf_id == infowindowsArray[i].bookshelf_id){
-										infowindowsArray[i].open(map,markersArray[i]);
-										//alert(infowindowsArray[i].position);
+									$("span.bookshelfitem").each(function(index){
+			        					if(this.id == walker){
+			        						$(this).css({ 
+												'color': '#6A5ACD',
+												'font-weight' : 'bold',
+												'background': '#fFfffF'
+											});
+			        					}else{
+			        						$(this).css({
+						        				'color': '#222',
+						        				'font-weight' : 'normal',
+						        				'background' : '#f8f8f8'
+						        			});
+			        					}
+			        				});
+			        				
+								});
+								google.maps.event.addListener(markersArray[markersArray.length-1], 'mouseover', function(){
+									for(var i=0;i<infowindowsArray.length;i++){
+										if(this.bookshelf_id == infowindowsArray[i].bookshelf_id){
+											infowindowsArray[i].open(map,markersArray[i]);
+											//alert(infowindowsArray[i].position);
+										}
 									}
-								}
-								
-							});
-							google.maps.event.addListener(markersArray[markersArray.length-1], 'mouseout', function(){
-								for(var i=0;i<infowindowsArray.length;i++){
-									if(this.bookshelf_id == infowindowsArray[i].bookshelf_id){
-										infowindowsArray[i].close(map,markersArray[i]);
+									
+								});
+								google.maps.event.addListener(markersArray[markersArray.length-1], 'mouseout', function(){
+									for(var i=0;i<infowindowsArray.length;i++){
+										if(this.bookshelf_id == infowindowsArray[i].bookshelf_id){
+											infowindowsArray[i].close(map,markersArray[i]);
+										}
 									}
-								}
-							});
-		            	}
-	        		}
-	                $('<div/>', {
-		        		'class': 'bookshelflist',
-		        		html: items.join('')
-		        	}).appendTo('#bookshelf');
+								});
+			            	}
+		        		}
 
-		        	//$("div.bookshelflist").addClass("nav_ul");
-		        	//$("li.bookshelfitem").addClass("arrow_no nav_ul_li_a");
-		        	$("span.bookshelfitem").each(function(index){
-		        		$(this).click(function(){
-		        			bookshelflist = [];
-		        			$("span.bookshelfitem").css({
-		        				'color': '#222',
-		        				'font-weight' : 'normal',
-		        				'background' : '#f8f8f8'
+		                $('<div/>', {
+			        		'class': 'bookshelflist',
+			        		html: items.join('')
+			        	}).appendTo('#bookshelf');
+
+			        	//$("div.bookshelflist").addClass("nav_ul");
+			        	//$("li.bookshelfitem").addClass("arrow_no nav_ul_li_a");
+			        	$("span.bookshelfitem").each(function(index){
+			        		$(this).click(function(){
+			        			bookshelflist = [];
+			        			$("span.bookshelfitem").css({
+			        				'color': '#222',
+			        				'font-weight' : 'normal',
+			        				'background' : '#f8f8f8'
+			        			});
+		        				$(this).css({ 
+									'color': '#6A5ACD',
+									'font-weight' : 'bold',
+									'background': '#FFF'
+								});
+								bookshelflist.push(this.id);
+								selectBookshelf(this.id);
+			        			return false;
 		        			});
-	        				$(this).css({ 
-								'color': '#6A5ACD',
-								'font-weight' : 'bold',
-								'background': '#FFF'
-							});
-							bookshelflist.push(this.id);
-							selectBookshelf(this.id);
-		        			return false;
-	        			});
-		        	});
+			        	});
 
-		        	$("div.locationlist").css({
-						'background-color': '#fff'
-					});
-					$("div.locationlist").hover(function(){
-							$(this).css({
-							'background-color': '#f0fff0'
-						});
-					},function(){
-							$(this).css({
+			        	$("div.locationlist").css({
 							'background-color': '#fff'
 						});
-					});
-					
-		        	var container = document.querySelector('.bookshelflist');
-					var msnry = new Masonry( container, {
-					  // options
-					  columnWidth: 10,
-					  itemSelector: '.bookshelfitem',
-					  gutter : 15
-					});
-		        	getBookInBookshelf();
-
+						$("div.locationlist").hover(function(){
+								$(this).css({
+								'background-color': '#f0fff0'
+							});
+						},function(){
+								$(this).css({
+								'background-color': '#fff'
+							});
+						});
+						
+			        	var container = document.querySelector('.bookshelflist');
+						var msnry = new Masonry( container, {
+						  // options
+						  columnWidth: 10,
+						  itemSelector: '.bookshelfitem',
+						  gutter : 15
+						});
+			        	getBookInBookshelf();
+			        }
 	        	},
 	            error : function(e) {
 	                alert("error");
