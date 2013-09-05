@@ -32,13 +32,43 @@
 
 	</script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+	<!--<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.js"></script>-->
 	<script src="js/jquery.infinitescroll.min.js"></script>
 	<script src="http://masonry.desandro.com/masonry.pkgd.min.js"></script>
 	<script src="js/raphael-min.js"></script>
+	<script src="js/jquery.qtip.min.js"></script>
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyD6g8OfeZO32K1-ZU1eVARN0ExE0jTpru0&sensor=false&language=ko"></script>
 	
 	<script type="text/javascript">
+		this.tooltip = function(){	
+			/* CONFIG */		
+				xOffset = 10;
+				yOffset = 20;		
+				// these 2 variable determine popup's distance from the cursor
+				// you might want to adjust to get the right result		
+			/* END CONFIG */		
+			$("div.tooltip").hover(function(e){											  
+				this.t = this.title;
+				this.title = "";									  
+				$("body").append("<p id='tooltip'>"+ this.t +"</p>");
+				$("#tooltip")
+					.css("top",(e.pageY + xOffset) + "px")
+					.css("left",(e.pageX - yOffset) + "px")
+					.fadeIn("fast");		
+		    },
+			function(){
+				this.title = this.t;		
+				$("#tooltip").remove();
+		    });	
+			/*$("div.tooltip").mousemove(function(e){
+				$("#tooltip")
+					.css("top",(e.pageY + xOffset) + "px")
+					.css("left",(e.pageX - yOffset) + "px");
+			});*/			
+		};
+
 		$(document).ready(function(){
+			tooltip();
 			mapOptions = {
 	          center: new google.maps.LatLng(c_latitude, c_longitude),
 	          //zoom: last_zoom,
@@ -78,8 +108,13 @@
 	            data : "",
 	            dataType : "jsonp",
 	            success : function(json) {
-	            	$("#user_info").html(json.user_info.user_name);
-	            	$("#login_button").css("width","0px");
+	            	if(json.user_info=="0"){
+	            		$("#user_info").html("");
+	            		$("#login_button").css("width","40px");
+	            	}else{
+		            	$("#user_info").html(json.user_info.user_name);
+		            	$("#login_button").css("width","0px");
+		            }
 	            	
 	        	},
 	            error : function(e){
@@ -418,8 +453,8 @@
 		        			if(key=='bookshelf_id'){ bookshelf_id = val; }
 		        			if(key=="author"){ author = val; }
 		        			if(key=="sub_title"){ sub_title = val; 
-		        				if(sub_title=="null"||sub_title==""||sub_title==" "){
-		        					sub_title=null;
+		        				if(sub_title=="null"||sub_title==""||sub_title==" "){ 
+		        					sub_title=null; 
 		        				}
 		        			}
 		        			if(key=='title'){ title = val; }
@@ -427,11 +462,14 @@
 		        			if(key=='description'){ description = val; }
 		        			if(key=='tag'){ tag = val; }	
 		                });
-		                if(sub_title==null||sub_title=="null"||sub_title==""||sub_title==" "){
-		                	items.push('<div class="bookitem" id="'+book_id+'">' + '<table><tr><td class="bookitem_td" align="center"><img class="bookitem_pic" src="'+pic_url +'"/></td></tr><tr><td><span class="bookitem_title">'+ title + '</span></td><tr><tr><td style="padding-top:12px;"><span class="bookitem_author">' +"/ "+ author + '</span></td></tr></table></div>');
-		                }else{
-		                	items.push('<div class="bookitem" id="'+book_id+'">' + '<table ><tr><td class="bookitem_td" align="center"><img class="bookitem_pic" src="'+pic_url +'"/></td></tr><tr><td colspan="2"><span class="bookitem_title">'+ title + '</span></td><tr><tr><td style="padding-top:12px;"><span class="bookitem_sub_title">' +": "+sub_title + '</td><tr><tr><td colspan="2" style="padding-top:12px;"><span class="bookitem_author">'+"/ "+author+'</span></td></tr></table></div>');
+
+		                var item_html = '<div class="bookitem" id="'+book_id+'">' + '<table><tr><td class="bookitem_td" align="center"><img class="bookitem_pic" src="'+pic_url +'"/></td></tr><tr><td><span class="bookitem_title">'+ title + '</span></td><tr>';
+		                if(sub_title!=null){
+		                	item_html+='<tr><td style="padding-top:12px;"><span class="bookitem_sub_title">' +": "+sub_title + '</td></tr>'
 		            	}
+		            	item_html+='<tr><td style="padding-top:12px;"><span class="bookitem_author">' +"/ "+ author + '</span></td></tr></table></div>';
+
+		            	items.push(item_html);
 
 		            	book_list.push({
 		            		"title": title,
@@ -563,32 +601,32 @@
     				bookshelf_pic_url = markersArray[i].pic_url;
     			}
     		}
+    		var detail_html = '<a href="#" class="close">'
+    			+'<img src="images/close_pop.png" class="btn_close" title="Close Window" alt="Close" /></a>'
+    			+'<p><table border="0"><tr>'
+    			+'<td valign="top" width="125">'
+    				+'<img class="book_detail_pic" align="bottom" border="1" src="'+pic_url+'">'
+    			+'</td><td valign="bottom">'
+    				+'<span class="book_detail_title">'+title+ '</span>';
 
-			if(sub_title==null){
-    			$("#book-detail-box").html('<a href="#" class="close">'
-    				+'<img src="images/close_pop.png" class="btn_close" title="Close Window" alt="Close" /></a><p>'
-    				+'<table border="0"><tr>'
-    				+'<td valign="top" width="125"><img class="book_detail_pic" align="bottom" border="1" src="'+pic_url+'"></td>'
-    				+'<td valign="bottom">'
-    				+'<span class="book_detail_title">'+title+ '</span><br><span class="book_detail_author">'+author+'</span><br><span class="book_detail_sub_title">' + "" + '</span></td></tr>'
-    				+'<tr><td colspan="2" height="21"></td></tr>'
-    				+'<tr><td colspan="2" class="book-detail-popup2"><p><span class="book_detail_description">'+description+'</span></p><p><span class="book_detail_tags">'+tags+'</span></p><p><span class="book_detail_pub_date">'+pub_date+'</span></p></td></tr>'
-    				+'<tr><td colspan="2" height="14"></td></tr>'
-    				+'<tr><td colspan="2" class="book-detail-popup2"><img align="absmiddle" width="40" height="40" src="'+bookshelf_pic_url+'"><span class="book_detail_bookshelf">&nbsp;&nbsp;&nbsp;&nbsp;'+bookshelf_name+'</span><span class="book_detail_tags">'+'&nbsp;&nbsp;'+bookshelf_book_count+'권</span></td></tr>'
-    				+'</table>');
-            }else{
-            	$("#book-detail-box").html('<a href="#" class="close">'
-    				+'<img src="images/close_pop.png" class="btn_close" title="Close Window" alt="Close" /></a><p>'
-    				+'<table border="0"><tr>'
-    				+'<td valign="top" width="125"><img class="book_detail_pic" align="bottom" border="1" src="'+pic_url+'"></td>'
-    				+'<td valign="bottom">'
-    				+'<span class="book_detail_title">'+title+ '</span><br><span class="book_detail_sub_title">' + sub_title + '</span><br><span class="book_detail_author">'+author+'</span></td></tr>'
-    				+'<tr><td colspan="2" height="21"></td></tr>'
-    				+'<tr><td colspan="2" class="book-detail-popup2"><p><span class="book_detail_description">'+description+'</span></p><p><span class="book_detail_tags">'+tags+'</span></p><p><span class="book_detail_pub_date">'+pub_date+'</span></p></td></tr>'
-    				+'<tr><td colspan="2" height="14"></td></tr>'
-    				+'<tr><td colspan="2" class="book-detail-popup2"><img align="absmiddle" width="40" height="40" src="'+bookshelf_pic_url+'"><span class="book_detail_bookshelf">&nbsp;&nbsp;&nbsp;&nbsp;'+bookshelf_name+'</span><span class="book_detail_tags">'+'&nbsp;&nbsp;'+bookshelf_book_count+'권</span></td></tr>'
-    				+'</table>');
+			if(sub_title!=null){
+            	detail_html+='<br><span class="book_detail_sub_title">' + sub_title + '</span>';
         	}
+        	detail_html+='<br><span class="book_detail_author">'+author+'</span></td></tr>'
+    			+'<tr><td colspan="2" height="21"></td></tr>'
+    			+'<tr><td colspan="2" class="book-detail-popup2">'
+    				+'<p><span class="book_detail_description">'+description+'</span></p>'
+    				+'<p><span class="book_detail_tags">'+tags+'</span></p>'
+    				+'<p><span class="book_detail_pub_date">'+pub_date+'</span></p>'
+    			+'</td></tr>'
+    			+'<tr><td colspan="2" height="14"></td></tr>'
+    			+'<tr><td colspan="2" class="book-detail-popup2">'
+    				+'<img align="absmiddle" width="40" height="40" src="'+bookshelf_pic_url+'">'
+    				+'<span class="book_detail_bookshelf">&nbsp;&nbsp;&nbsp;&nbsp;'+bookshelf_name+'</span>'
+    				+'<span class="book_detail_tags">'+'&nbsp;&nbsp;'+bookshelf_book_count+'권</span>'
+    			+'</td></tr>'
+    			+'</table>'
+    		$("#book-detail-box").html(detail_html);
 
             $('a.close, #mask').click(function() { 
 			  	$('#mask , .book-detail-popup').fadeOut(300 , function() {
@@ -652,7 +690,7 @@
 			</form>
 			<div class="logo"><img src="images/logo_web.png" width="53" height="22"></div>
 			
-			<div id="login_button"></div>
+			<div id="login_button" class="tooltip" title="개인 책장을 함께 볼 수 있어요 :)"></div>
 			<div id="user_info"></div>
 		</div>
 	</nav>	

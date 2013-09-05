@@ -22,6 +22,16 @@ body {
     margin:0 auto;
 }
 
+#tooltip{
+    position:absolute;
+    border:1px solid #333;
+    background:white;
+    font-size: 14px;
+    padding:5px 5px;
+    color:#333;
+    display:none;
+}
+
 .search_query{
     float:left;
     height:30px;
@@ -82,6 +92,9 @@ body {
     margin-top:16px;
     margin-right:0px; 
     padding:0px;
+}
+#user_info:hover {
+    cursor:pointer;
 }
 
 #login_button{
@@ -186,9 +199,6 @@ div.bookitem{
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);*/
 }
 div.bookitem:hover {
-    /*background: #555;
-    color: #fff; */
-    /* #6a5acd */
     background: #f8f8f8;
     color: #000;
     cursor: pointer;
