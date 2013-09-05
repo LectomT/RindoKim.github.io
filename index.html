@@ -411,7 +411,7 @@
 	            success : function(json) {
 	            	var items = [];
 	            	for(var i=0;i<json.items.length;i++){
-	            		var bookshelf_id,book_id, pic_url, title,author,sub_title,description,tag;
+	            		var bookshelf_id,book_id, pic_url, title,author,sub_title,pub_date,description,tag;
 	            		$.each(json.items[i], function(key, val) {
 		        			if(key=='pic_url'){ pic_url = val; }
 		        			if(key=='book_id'){ book_id = val; }
@@ -423,6 +423,7 @@
 		        				}
 		        			}
 		        			if(key=='title'){ title = val; }
+		        			if(key=='pub_date'){ pub_date = val; }
 		        			if(key=='description'){ description = val; }
 		        			if(key=='tag'){ tag = val; }	
 		                });
@@ -440,6 +441,7 @@
 		            		"book_id": book_id,
 		            		"bookshelf_id": bookshelf_id,
 		            		"description": description,
+		            		"pub_date": pub_date,
 		            		"tag": tag
 		            	});
 	    			}
@@ -570,7 +572,7 @@
     				+'<td valign="bottom">'
     				+'<span class="book_detail_title">'+title+ '</span><br><span class="book_detail_author">'+author+'</span><br><span class="book_detail_sub_title">' + "" + '</span></td></tr>'
     				+'<tr><td colspan="2" height="21"></td></tr>'
-    				+'<tr><td colspan="2" class="book-detail-popup2"><p><span class="book_detail_description">'+description+'</span></p><p><span class="book_detail_tags">'+tags+'</span></p></td></tr>'
+    				+'<tr><td colspan="2" class="book-detail-popup2"><p><span class="book_detail_description">'+description+'</span></p><p><span class="book_detail_tags">'+tags+'</span></p><p><span class="book_detail_pub_date">'+pub_date+'</span></p></td></tr>'
     				+'<tr><td colspan="2" height="14"></td></tr>'
     				+'<tr><td colspan="2" class="book-detail-popup2"><img align="absmiddle" width="40" height="40" src="'+bookshelf_pic_url+'"><span class="book_detail_bookshelf">&nbsp;&nbsp;&nbsp;&nbsp;'+bookshelf_name+'</span><span class="book_detail_tags">'+'&nbsp;&nbsp;'+bookshelf_book_count+'권</span></td></tr>'
     				+'</table>');
@@ -582,7 +584,7 @@
     				+'<td valign="bottom">'
     				+'<span class="book_detail_title">'+title+ '</span><br><span class="book_detail_sub_title">' + sub_title + '</span><br><span class="book_detail_author">'+author+'</span></td></tr>'
     				+'<tr><td colspan="2" height="21"></td></tr>'
-    				+'<tr><td colspan="2" class="book-detail-popup2"><p><span class="book_detail_description">'+description+'</span></p><p><span class="book_detail_tags">'+tags+'</span></p></td></tr>'
+    				+'<tr><td colspan="2" class="book-detail-popup2"><p><span class="book_detail_description">'+description+'</span></p><p><span class="book_detail_tags">'+tags+'</span></p><p><span class="book_detail_pub_date">'+pub_date+'</span></p></td></tr>'
     				+'<tr><td colspan="2" height="14"></td></tr>'
     				+'<tr><td colspan="2" class="book-detail-popup2"><img align="absmiddle" width="40" height="40" src="'+bookshelf_pic_url+'"><span class="book_detail_bookshelf">&nbsp;&nbsp;&nbsp;&nbsp;'+bookshelf_name+'</span><span class="book_detail_tags">'+'&nbsp;&nbsp;'+bookshelf_book_count+'권</span></td></tr>'
     				+'</table>');

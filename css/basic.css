@@ -238,6 +238,11 @@ span.book_detail_tags{ /* Tags */
     font:normal 16px/0px sans-serif; 
     color:#808080;
 }
+span.book_detail_pub_date{ /* Tags */
+    font:normal 14px/0px sans-serif; 
+    text-align: right;
+    color:#808080;
+}
 img.book_detail_pic{ /* Picture(Cover) */
     /*display:inline-block; width:115px; height:165px; margin-right:20px; float:left;*/
     display:inline-block; width:125px; height:178px; margin-right:22px; float:left;
