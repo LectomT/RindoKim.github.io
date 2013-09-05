@@ -169,17 +169,6 @@ form.signin input::-webkit-input-placeholder { color:#bbb; text-shadow:0 0 2px #
 	.book-detail-popup{
 		display:none;
 		width:340px;
-		/*
-		background: #fff;
-		padding: 10px; 
-		border: 2px solid #ddd;
-		font-size: 1.2em;
-		box-shadow: 0px 0px 20px #999;
-		-moz-box-shadow: 0px 0px 20px #999; /* Firefox */
-	    /*-webkit-box-shadow: 0px 0px 20px #999; /* Safari, Chrome */
-		/*border-radius:3px 3px 3px 3px;
-	    /*-moz-border-radius: 3px; /* Firefox */
-	    /*-webkit-border-radius: 3px; /* Safari, Chrome */
 		float: left;
 		position: fixed;
 		top: 4%; left: 50%;
