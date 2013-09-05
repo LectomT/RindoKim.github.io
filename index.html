@@ -219,7 +219,8 @@
 			$("div.locationlist").click(refreshLocation);
 
 			// When clicking on the button close or the mask layer the popup closed
-			$('a.close, #mask').click(function() { 
+			//$('a.close, #mask,#book-detail-box').click(function() { 
+			$('#mask, #book-detail-box').click(function() { 
 			  $('#mask , .book-detail-popup').fadeOut(300 , function() {
 				$('#mask').remove();  
 			}); 
@@ -604,8 +605,8 @@
     				bookshelf_pic_url = markersArray[i].pic_url;
     			}
     		}
-    		var detail_html = '<a href="#" class="close">'
-    			+'<img src="images/close_pop.png" class="btn_close" title="Close Window" alt="Close" /></a>'
+    		var detail_html = //'<a href="#" class="close">'
+    			+'<img width="0" src="images/close_pop.png" class="btn_close" title="Close Window" alt="Close" /></a>'
     			+'<p><table border="0"><tr>'
     			+'<td valign="top" width="125">'
     				+'<img class="book_detail_pic" align="bottom" border="1" src="'+pic_url+'">'
@@ -631,7 +632,8 @@
     			+'</table>'
     		$("#book-detail-box").html(detail_html);
 
-            $('a.close, #mask').click(function() { 
+            //$('a.close, #mask').click(function() { 
+            $('#mask,#book-detail-box').click(function() { 
 			  	$('#mask , .book-detail-popup').fadeOut(300 , function() {
 			  		$("#book-detail-box").html('<img src="http://gifasm.com/img/loading.gif" width="60" height="60">');
 					$('#mask').remove();  
@@ -693,7 +695,7 @@
 			</form>
 			<div class="logo"><img src="images/logo_web.png" width="53" height="22"></div>
 			
-			<div id="login_button" class="tooltip" title="개인 책장을 함께 볼 수 있어요 :)"></div>
+			<div id="login_button" class="tooltip" title="로그인 시, 개인 책장을 함께 볼 수 있어요 :)"></div>
 			<div id="user_info"></div>
 		</div>
 	</nav>	
