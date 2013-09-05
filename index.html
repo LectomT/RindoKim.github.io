@@ -448,7 +448,10 @@
 	            	for(var i=0;i<json.items.length;i++){
 	            		var bookshelf_id,book_id, pic_url, title,author,sub_title,pub_date,description,tag;
 	            		$.each(json.items[i], function(key, val) {
-		        			if(key=='pic_url'){ pic_url = val; }
+		        			if(key=='pic_url'){ 
+		        				if(val == "False" || val=="null" || val==null || val=="  "){ pic_url = "";
+		        				}else{ pic_url = val; }
+			        		}
 		        			if(key=='book_id'){ book_id = val; }
 		        			if(key=='bookshelf_id'){ bookshelf_id = val; }
 		        			if(key=="author"){ author = val; }
