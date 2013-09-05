@@ -142,6 +142,7 @@
 				sort_by = "pub_date_desc";
 				$('#book').html("");
 				$('#book').css("height","0px");
+				
 				getBookInBookshelf();
 			});
 
@@ -149,6 +150,7 @@
 				sort_by = "reg_date_desc";
 				$('#book').html("");
 				$('#book').css("height","0px");
+				 
 				getBookInBookshelf();
 			});
 
@@ -156,6 +158,7 @@
 				sort_by = "random";
 				$('#book').html("");
 				$('#book').css("height","0px");
+				 
 				getBookInBookshelf();
 			});
 			$(".logo").click(function(){
@@ -255,6 +258,7 @@
 								    map: map,
 								    draggable:false,
 								    title: name,
+								    pic_url: pic_url,
 								    bookshelf_id: bookshelf_id,//bookshelf_id.toString(),
 								    name: name,
 								    book_count: book_count.toString()
@@ -375,7 +379,7 @@
 			});
 
 			var query = document.forms["search_form"]["query"].value;
-			var f_offset = 0, l_offset = 99, in_bookshelf = "";
+			var f_offset = 0, l_offset = 299, in_bookshelf = "";
 			
 			for(var i=0;i<bookshelflist.length;i++){
 				in_bookshelf += bookshelflist[i];
@@ -511,7 +515,8 @@
 		}
 
 		function getBookDetail(book_id) {
-			var title, author, sub_title, pic_url, description, tag,tags="",pub_date;
+			var title, author, sub_title, pic_url, description, tag,tags="",pub_date,
+				bookshelf_id,bookshelf_name,bookshelf_book_count,bookshelf_pic_url;
 			for(var i=0;i<book_list.length;i++){
 				if(book_id == book_list[i].book_id){
 					title = book_list[i].title;
@@ -521,18 +526,25 @@
 					description = book_list[i].description;
 					tag = book_list[i].tag;
 					pub_date = book_list[i].pub_date;
+					bookshelf_id = book_list[i].bookshelf_id;
 				}
 			}
 			for(var i=0;i<tag.length;i++){
             	var tag_kind;
-                   $.each(tag[i],function(key, val){
-                	if(key=="tag_kind"){
-                		tag_kind = val;
-                	}
+                $.each(tag[i],function(key, val){
+                	if(key=="tag_kind"){ tag_kind = val; }
                 	if(key=="tag_name" && tag_kind=="category"){
                 		tags = tags +"#"+ val + "&nbsp; &nbsp;";
                 	}
                 });
+    		}
+    		
+    		for(var i=0;i<markersArray.length;i++){
+    			if(bookshelf_id == markersArray[i].bookshelf_id){
+    				bookshelf_name = markersArray[i].name;
+    				bookshelf_book_count = markersArray[i].book_count;
+    				bookshelf_pic_url = markersArray[i].pic_url;
+    			}
     		}
 
 			if(sub_title==null){
@@ -542,8 +554,11 @@
     				+'<td valign="top" width="125"><img class="book_detail_pic" align="bottom" border="1" src="'+pic_url+'"></td>'
     				+'<td valign="bottom">'
     				+'<span class="book_detail_title">'+title+ '</span><br><span class="book_detail_author">'+author+'</span><br><span class="book_detail_sub_title">' + "" + '</span></td></tr>'
-    				+'<tr><td colspan="2" height="20"></td></tr>'
-    				+'<tr><td colspan="2" class="book-detail-popup2"><p><span class="book_detail_description">'+description+'</span></p><p><span class="book_detail_tags">'+tags+'</span></p></td></tr></table>');
+    				+'<tr><td colspan="2" height="21"></td></tr>'
+    				+'<tr><td colspan="2" class="book-detail-popup2"><p><span class="book_detail_description">'+description+'</span></p><p><span class="book_detail_tags">'+tags+'</span></p></td></tr>'
+    				+'<tr><td colspan="2" height="14"></td></tr>'
+    				+'<tr><td colspan="2" class="book-detail-popup2"><img align="absmiddle" width="40" height="40" src="'+bookshelf_pic_url+'"><span class="book_detail_bookshelf">&nbsp;&nbsp;&nbsp;&nbsp;'+bookshelf_name+'</span><span class="book_detail_tags">'+'&nbsp;&nbsp;'+bookshelf_book_count+'권</span></td></tr>'
+    				+'</table>');
             }else{
             	$("#book-detail-box").html('<a href="#" class="close">'
     				+'<img src="images/close_pop.png" class="btn_close" title="Close Window" alt="Close" /></a><p>'
@@ -551,8 +566,11 @@
     				+'<td valign="top" width="125"><img class="book_detail_pic" align="bottom" border="1" src="'+pic_url+'"></td>'
     				+'<td valign="bottom">'
     				+'<span class="book_detail_title">'+title+ '</span><br><span class="book_detail_sub_title">' + sub_title + '</span><br><span class="book_detail_author">'+author+'</span></td></tr>'
-    				+'<tr><td colspan="2" height="20"></td></tr>'
-    				+'<tr><td colspan="2" class="book-detail-popup2"><p><span class="book_detail_description">'+description+'</span></p><p><span class="book_detail_tags">'+tags+'</span></p></td></tr></table>');
+    				+'<tr><td colspan="2" height="21"></td></tr>'
+    				+'<tr><td colspan="2" class="book-detail-popup2"><p><span class="book_detail_description">'+description+'</span></p><p><span class="book_detail_tags">'+tags+'</span></p></td></tr>'
+    				+'<tr><td colspan="2" height="14"></td></tr>'
+    				+'<tr><td colspan="2" class="book-detail-popup2"><img align="absmiddle" width="40" height="40" src="'+bookshelf_pic_url+'"><span class="book_detail_bookshelf">&nbsp;&nbsp;&nbsp;&nbsp;'+bookshelf_name+'</span><span class="book_detail_tags">'+'&nbsp;&nbsp;'+bookshelf_book_count+'권</span></td></tr>'
+    				+'</table>');
         	}
 
             $('a.close, #mask').click(function() { 
@@ -562,67 +580,6 @@
 				}); 
 			return false;
 			});
-			/*$.ajax({
-	            type : "GET",
-	            url : "http://dafer-dev.herokuapp.com/book/"+book_id+"/",
-	            data : "",
-	            dataType : "jsonp",
-	            success : function(json) {
-	            	var title, author, sub_title, pic_url, description, tags="",pub_date;
-
-            		$.each(json.item, function(key, val) {
-	        			if(key=='pic_url'){ pic_url = val; }
-	        			if(key=='book_id'){ book_id = val; }
-	        			if(key=='pub_date'){ pub_date = val; }
-	        			if(key=="author"){ author = val; }
-	        			if(key=="description"){ description = val; }
-	        			if(key=="sub_title"){ sub_title = val; }
-	        			if(key=='title'){ title = val; }	
-	                });
-	                for(var i=0;i<json.item.tag.length;i++){
-	                	var tag_kind;
-		                   $.each(json.item.tag[i],function(key, val){
-		                	if(key=="tag_kind"){
-		                		tag_kind = val;
-		                	}
-		                	if(key=="tag_name" && tag_kind=="category"){
-		                		tags = tags +"#"+ val + "&nbsp; &nbsp;";
-		                	}
-		                });
-	        		}
-
-	        		if(sub_title==null){
-	        			$("#book-detail-box").html('<a href="#" class="close">'
-	        				+'<img src="images/close_pop.png" class="btn_close" title="Close Window" alt="Close" /></a><p>'
-	        				+'<table border="0"><tr>'
-	        				+'<td valign="top" width="125"><img class="book_detail_pic" align="bottom" border="1" src="'+pic_url+'"></td>'
-	        				+'<td valign="bottom">'
-	        				+'<span class="book_detail_title">'+title+ '</span><br><span class="book_detail_author">'+author+'</span><br><span class="book_detail_sub_title">' + "" + '</span></td></tr>'
-	        				+'<tr><td colspan="2" height="20"></td></tr>'
-	        				+'<tr><td colspan="2" class="book-detail-popup2"><p><span class="book_detail_description">'+description+'</span></p><p><span class="book_detail_tags">'+tags+'</span></p></td></tr></table>');
-	                }else{
-	                	$("#book-detail-box").html('<a href="#" class="close">'
-	        				+'<img src="images/close_pop.png" class="btn_close" title="Close Window" alt="Close" /></a><p>'
-	        				+'<table border="0"><tr>'
-	        				+'<td valign="top" width="125"><img class="book_detail_pic" align="bottom" border="1" src="'+pic_url+'"></td>'
-	        				+'<td valign="bottom">'
-	        				+'<span class="book_detail_title">'+title+ '</span><br><span class="book_detail_sub_title">' + sub_title + '</span><br><span class="book_detail_author">'+author+'</span></td></tr>'
-	        				+'<tr><td colspan="2" height="20"></td></tr>'
-	        				+'<tr><td colspan="2" class="book-detail-popup2"><p><span class="book_detail_description">'+description+'</span></p><p><span class="book_detail_tags">'+tags+'</span></p></td></tr></table>');
-	            	}
-
-	                $('a.close, #mask').click(function() { 
-					  	$('#mask , .book-detail-popup').fadeOut(300 , function() {
-					  		$("#book-detail-box").html('<img src="http://gifasm.com/img/loading.gif" width="60" height="60">');
-							$('#mask').remove();  
-						}); 
-					return false;
-					});
-	        	},
-	            error : function(e) {
-	                alert("error");
-	            }
-	        });*/
 		}	
 		    
 	</script>
@@ -676,7 +633,7 @@
 				<input class="search_query" type="text" name="query" placeholder="근처의 책 검색">
 				<input type="submit" value="" class="input_search">
 			</form>
-			<div class="logo">bolocat</div>
+			<div class="logo"><img src="images/logo_web.png" width="53" height="22"></div>
 
 			<div id="login_button"></div>
 		</div>
