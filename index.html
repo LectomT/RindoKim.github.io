@@ -187,7 +187,7 @@
 				term = $form.find('input[name="query"]').val(),
 				url = $form.attr('action');
 
-				var posting = $.post(url,{query:term});
+				var posting = $.get(url,{query:term});
 				posting.done(function(data){
 					$('.booklist').remove();
 					getBookInBookshelf();
